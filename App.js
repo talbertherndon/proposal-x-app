@@ -1,20 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import ProjectScreen from './src/app/project';
+import { EvaIconsPack } from '@ui-kitten/eva-icons'
+import HomeScreen from './src/app/home';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Image } from 'expo-image';
+
+import { default as theme } from './custom-theme.json'
+const Stack = createNativeStackNavigator();
+
+function Logo() {
+  return (
+    <Image resizeMode='contain' style={{ width: 50, height: 50 }} source={require("./assets/icon.png")} />
+  )
+}
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <IconRegistry icons={EvaIconsPack} />
+      <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name='Home' component={HomeScreen} options={{ headerTitle: (props) => <Logo {...props} /> }} />
+            <Stack.Screen name='Project' component={ProjectScreen} options={{ title: "Proposal" }} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </ApplicationProvider>
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
