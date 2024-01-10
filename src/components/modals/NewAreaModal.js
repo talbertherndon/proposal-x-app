@@ -12,17 +12,18 @@ import {
     Text,
 } from "@ui-kitten/components";
 import React, { useEffect, useState } from "react";
-import { FlatList, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View, VirtualizedList } from "react-native";
+import { Dimensions, FlatList, Keyboard, KeyboardAvoidingView, Platform, ScrollView, TouchableHighlight, TouchableOpacity, TouchableWithoutFeedback, View, VirtualizedList, useWindowDimensions } from "react-native";
 import { areas } from "../../mock/areas";
 import { Image } from "expo-image";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import CurrencyInput from 'react-native-currency-input';
-import PhoneCamera from "../PhoneCamera";
+import PhoneCamera from "../../app/camera";
+import { useNavigation } from "@react-navigation/native";
 
 
 
-export default function NewAreaModal({ setVisible, addAreaHandler, editMode, editAreaHandler }) {
-
+export default function NewAreaModal({ setVisible, addAreaHandler, editMode, editAreaHandler, mode }) {
+    const windowHeight = Dimensions.get('window').height;
     const [selected, setSelected] = useState("Interior");
     const [selecting, setSelecting] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(editMode ? editMode : null);
@@ -30,38 +31,54 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
     const [requirements, setRequirements] = useState([])
     const [checked, setChecked] = useState([])
     const [estimate, setEstimate] = useState(editMode ? editMode.estimate : '');
+    const navigation = useNavigation();
+
 
     function handleRoomSelect(room) {
         setSelecting(false);
         setName(room.name)
         setSelectedRoom(room);
         if (room.category === 'Interior') {
-            setRequirements(["Walls", "Ceiling", "Trim", "Windows", "Doors", "Closets", "Primer", "Minor Patching & Sanding", "Wallpaper Removal"])
+            setRequirements(["Walls", "Ceiling", "Trim", "Windows", "Doors", "Closets", "Primer", "Primer Spot", "Minor Patching & Sanding", "Wallpaper Removal"])
         } else {
             setRequirements(["Power Wash", "Scrape/Sand", "Caulk", "Priming", "Painting", "Sealer/Staom", "Wood Repair", "Other"])
 
         }
     }
     function handleChecked(option) {
-        if (checked.includes(option)) {
-            setChecked(checked.filter(item => item !== option))
+        const includes = !!checked.find(obj => obj.name === option)
+        if (includes) {
+            setChecked(checked.filter(item => item.name !== option))
         } else {
-            setChecked([...checked, option])
+            setChecked([...checked, { name: option, coat: 1, comment: "" }])
         }
     }
 
+    function handleUpdateCoat(option, coat) {
+        setChecked(prev => prev.map(opt => opt.name === option ? { ...opt, coat: coat } : opt))
+    }
+
+    function handleUpdateComment(option, comment) {
+        console.log(checked);
+        setChecked(prev => prev.map(opt => opt.name === option ? { ...opt, comment: comment } : opt))
+    }
+
     function customPhotoHandler() {
+        navigation.navigate('Camera', { ...selectedRoom, requirements: checked, name, estimate })
+        setVisible(false)
 
     }
 
     useEffect(() => {
         if (editMode) {
             handleRoomSelect(editMode)
+            setChecked(editMode?.requirements)
+
         }
     }, [editMode])
 
     return (
-        <Card disabled={true}>
+        <Card style={{ maxHeight: windowHeight - (windowHeight / 5) }} disabled={true}>
             <KeyboardAwareScrollView>
                 <View style={{ width: 30, height: 30, marginLeft: "auto" }}>
                     <Icon
@@ -72,7 +89,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                     />
                 </View>
                 <View>
-                    <Text category="h5">{editMode ? 'Edit' : 'New'} Area</Text>
+                    <Text category="h5">{mode == 'edit' ? 'Edit' : 'New'} Area</Text>
                     <Text style={{ marginVertical: 10 }} category="body">
                         Get started by filling in the information below to propose your new
                         area.
@@ -81,7 +98,9 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                 <View>
                     {selectedRoom ?
                         <View style={{ flexDirection: 'row', flex: 1, alignItems: 'flex-end', }}>
-                            <Image style={{ width: 100, height: 100, borderRadius: 10 }} source={selectedRoom.source} />
+                            <TouchableOpacity onPress={customPhotoHandler}>
+                                <Image style={{ width: 100, height: 100, borderRadius: 10 }} source={editMode ? editMode.source : selectedRoom.source} />
+                            </TouchableOpacity>
                             <View style={{ paddingHorizontal: 5 }}>
                                 <Input
                                     size="large"
@@ -109,7 +128,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                     {selecting &&
                         <Layout>
                             <View style={{ marginVertical: 10, flexDirection: 'row' }}>
-                                <ButtonGroup>
+                                <ButtonGroup size="small">
                                     <Button
                                         style={{ opacity: selected == 'Interior' ? 0.5 : 1 }}
                                         onPress={() => {
@@ -155,20 +174,31 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                     <Divider style={{ marginVertical: 20 }} />
 
                     {/* Requiements */}
-                    <Text category="h6" style={{ marginVertical: 10 }}>Requiements</Text>
+                    <Text category="h6" style={{ marginVertical: 10 }}>Requirements</Text>
                     {requirements.map((requirement) => {
-                        const state = checked.includes(requirement)
+                        const item = checked.find(obj => obj.name === requirement)
                         return (
-                            <>
+                            <View style={{ padding: 10 }}>
                                 <CheckBox
-                                    style={{ marginVertical: 3 }}
-                                    checked={state}
-                                    onChange={() => { handleChecked(requirement) }}
+                                    category="s2"
+                                    style={{ marginVertical: 3, }}
+                                    checked={!!item}
+                                    onChange={() => { handleChecked(requirement, 1) }}
                                 >
                                     {requirement}
                                 </CheckBox>
+                                {!!item &&
+                                    <View style={{ marginLeft: 33, marginBottom: 5 }}>
+                                        <Text category="s2">Coats:</Text>
+                                        <View style={{ flexDirection: 'row', margin: 1 }}>
+                                            <CheckBox checked={item.coat == 1} onChange={() => { item.coat == 1 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 1) }}>One</CheckBox>
+                                            <CheckBox checked={item.coat == 2} onChange={() => { item.coat == 2 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 2) }}>Two</CheckBox>
+                                        </View>
+                                        <Input style={{ marginVertical: 10 }} placeholder="Notes" value={item.comment} onChangeText={(text) => { handleUpdateComment(requirement, text) }} />
+                                    </View>
+                                }
 
-                            </>
+                            </View>
                         )
                     })}
 
@@ -184,7 +214,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                         delimiter=","
                         separator="."
                         precision={2}
-                    
+
                     />
 
 
@@ -193,8 +223,8 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                     <Button onPress={() => { setVisible(false); setSelecting(false); }} appearance="ghost">
                         Cancel
                     </Button>
-                    <Button onPress={() => { if (name && selectedRoom && estimate) { editMode ? editAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) : addAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) } }} >
-                        {editMode ? 'Edit' : 'Create'}
+                    <Button onPress={() => { if (name && selectedRoom && estimate) { mode == 'edit' ? editAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) : addAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) } }} >
+                        {mode == 'edit' ? 'Edit' : 'Create'}
                     </Button>
                 </View>
             </KeyboardAwareScrollView>

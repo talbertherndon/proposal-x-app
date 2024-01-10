@@ -5,13 +5,13 @@ import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function CustomerInformation({ tab, setCustomerInformation }) {
-    const [name, setName] = useState('')
-    const [address, setAddress] = useState('')
-    const [city, setCity] = useState('')
-    const [state, setState] = useState('')
-    const [zip, setZip] = useState('')
-    const [phone, setPhone] = useState('')
-    const [email, setEmail] = useState('')
+    const [name, setName] = useState('John Doe')
+    const [address, setAddress] = useState('123 Main St')
+    const [city, setCity] = useState('Chicago')
+    const [state, setState] = useState('IL')
+    const [zip, setZip] = useState(60065)
+    const [phone, setPhone] = useState(9378466871)
+    const [email, setEmail] = useState('johndoe@gmail.com')
 
 
     useEffect(() => {
@@ -47,7 +47,6 @@ export default function CustomerInformation({ tab, setCustomerInformation }) {
 const styles = StyleSheet.create({
     container: {
         padding: 16,
-        marginVertical: 10,
         flex: 1,
     },
     input: {

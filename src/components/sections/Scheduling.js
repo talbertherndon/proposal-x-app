@@ -9,7 +9,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 export default function Scheduling({ tab, setSchedulingInformation }) {
     const [startDate, setStartDate] = useState()
     const [finishDate, setFinishDate] = useState()
-    const [comment, setComment] = useState('')
+    const [comment, setComment] = useState('Project nodes here')
 
     useEffect(() => {
         const payload = {
@@ -62,7 +62,6 @@ export default function Scheduling({ tab, setSchedulingInformation }) {
 const styles = StyleSheet.create({
     contiainer: {
         padding: 16,
-        marginTop: 10,
     },
     input: {
         marginTop: 20
