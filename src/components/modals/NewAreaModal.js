@@ -26,13 +26,18 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
     const windowHeight = Dimensions.get('window').height;
     const [selected, setSelected] = useState("Interior");
     const [selecting, setSelecting] = useState(false);
-    const [selectedRoom, setSelectedRoom] = useState(editMode ? editMode : null);
-    const [name, setName] = useState(editMode ? editMode.name : '')
+    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [name, setName] = useState('')
     const [requirements, setRequirements] = useState([])
     const [checked, setChecked] = useState([])
-    const [estimate, setEstimate] = useState(editMode ? editMode.estimate : '');
+    const [estimate, setEstimate] = useState('');
+    const [filteredRooms, setFilterRooms] = useState(areas)
     const navigation = useNavigation();
+    function filterItems(filter) {
+        setSelected(filter);
+        setFilterRooms(areas.filter(room => room.category === filter))
 
+    }
 
     function handleRoomSelect(room) {
         setSelecting(false);
@@ -59,22 +64,25 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
     }
 
     function handleUpdateComment(option, comment) {
-        console.log(checked);
         setChecked(prev => prev.map(opt => opt.name === option ? { ...opt, comment: comment } : opt))
     }
 
     function customPhotoHandler() {
-        navigation.navigate('Camera', { ...selectedRoom, requirements: checked, name, estimate })
+        navigation.navigate('Camera', { ...selectedRoom, requirements: checked, name, estimate, index: editMode?.index })
         setVisible(false)
 
     }
 
+
     useEffect(() => {
         if (editMode) {
             handleRoomSelect(editMode)
-            setChecked(editMode?.requirements)
+            setChecked(typeof editMode?.requirements === 'string' ? JSON.parse(editMode.requirements) : editMode.requirements)
+            setName(editMode.name)
+            setEstimate(editMode.estimate)
 
         }
+
     }, [editMode])
 
     return (
@@ -90,7 +98,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                 </View>
                 <View>
                     <Text category="h5">{mode == 'edit' ? 'Edit' : 'New'} Area</Text>
-                    <Text style={{ marginVertical: 10 }} category="body">
+                    <Text style={{ marginVertical: 10 }} category="p1">
                         Get started by filling in the information below to propose your new
                         area.
                     </Text>
@@ -99,7 +107,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                     {selectedRoom ?
                         <View style={{ flexDirection: 'row', flex: 1, alignItems: 'flex-end', }}>
                             <TouchableOpacity onPress={customPhotoHandler}>
-                                <Image style={{ width: 100, height: 100, borderRadius: 10 }} source={editMode ? editMode.source : selectedRoom.source} />
+                                <Image style={{ width: 100, height: 100, borderRadius: 10 }} source={selectedRoom.source} />
                             </TouchableOpacity>
                             <View style={{ paddingHorizontal: 5 }}>
                                 <Input
@@ -121,6 +129,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                             accessoryLeft={<Icon name="plus-circle-outline" />}
                             onPress={() => {
                                 setSelecting(!selecting);
+                                filterItems(selected)
                             }}
                         >
                             Select Room or Area
@@ -132,7 +141,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                                     <Button
                                         style={{ opacity: selected == 'Interior' ? 0.5 : 1 }}
                                         onPress={() => {
-                                            setSelected("Interior");
+                                            filterItems("Interior");
                                         }}
                                     >
                                         Interior
@@ -140,7 +149,8 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                                     <Button
                                         style={{ opacity: selected == 'Exterior' ? 0.5 : 1 }}
                                         onPress={() => {
-                                            setSelected("Exterior");
+                                            filterItems("Exterior");
+
                                         }}
                                     >
                                         Exterior
@@ -149,57 +159,70 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
 
                                 <Button onPress={() => setSelecting(!selecting)} size="small" style={{ marginLeft: 'auto', backgroundColor: 'red' }}>Minimize</Button>
                             </View>
-                            <FlatList
-                                style={{ maxHeight: 450 }}
-                                data={areas}
-                                renderItem={({ item }) =>
-                                    item.category == selected ? (
-                                        <TouchableOpacity onPress={() => { handleRoomSelect(item); console.log("SOURCE:", item.source) }} style={{ flex: 1, margin: 5 }}>
+                            <ScrollView
+                                horizontal
+                                showsHorizontalScrollIndicator={true}
+                                showsVerticalScrollIndicator={false}
+                                contentContainerStyle={{ paddingVertical: 20 }}
+
+                            >
+                                <FlatList
+                                    scrollEnabled={false}
+                                    contentContainerStyle={{ alignSelf: 'flex-start' }}
+                                    numColumns={Math.ceil(filteredRooms.length / 2)}
+                                    key={filteredRooms.length}
+                                    showsVerticalScrollIndicator={false}
+                                    showsHorizontalScrollIndicator={true}
+                                    data={filteredRooms}
+                                    renderItem={({ item }) =>
+                                        <TouchableOpacity onPress={() => { handleRoomSelect(item); }} style={{ margin: 5 }}>
                                             <Image
-                                                style={{ width: "auto", height: 175, borderRadius: 10 }}
+                                                style={{ width: 150, height: 150, borderRadius: 10 }}
                                                 placeholder={require('../../../assets/areas/other.png')}
                                                 source={item.source}
                                                 contentFit="cover"
                                             />
                                             <Text style={{ fontSize: 16, marginBottom: 10, marginTop: 5 }} >{item.name}</Text>
                                         </TouchableOpacity>
-                                    ) : null
-                                }
-                                numColumns={2}
-                                keyExtractor={item => item.name}
+                                    }
+                                    keyExtractor={item => item.name}
 
-                            />
+                                />
+                            </ScrollView>
                         </Layout>
                     }
                     <Divider style={{ marginVertical: 20 }} />
 
                     {/* Requiements */}
                     <Text category="h6" style={{ marginVertical: 10 }}>Requirements</Text>
-                    {requirements.map((requirement) => {
-                        const item = checked.find(obj => obj.name === requirement)
-                        return (
-                            <View style={{ padding: 10 }}>
-                                <CheckBox
-                                    category="s2"
-                                    style={{ marginVertical: 3, }}
-                                    checked={!!item}
-                                    onChange={() => { handleChecked(requirement, 1) }}
-                                >
-                                    {requirement}
-                                </CheckBox>
-                                {!!item &&
-                                    <View style={{ marginLeft: 33, marginBottom: 5 }}>
-                                        <Text category="s2">Coats:</Text>
-                                        <View style={{ flexDirection: 'row', margin: 1 }}>
-                                            <CheckBox checked={item.coat == 1} onChange={() => { item.coat == 1 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 1) }}>One</CheckBox>
-                                            <CheckBox checked={item.coat == 2} onChange={() => { item.coat == 2 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 2) }}>Two</CheckBox>
+                    {!selectedRoom && <Text>Please Select Room.</Text>}
+                    {requirements.map((requirement, i) => {
+                        if (checked) {
+                            const item = checked.find(obj => obj.name === requirement)
+                            return (
+                                <View key={i} style={{ padding: 10 }}>
+                                    <CheckBox
+                                        category="s2"
+                                        style={{ marginVertical: 3, }}
+                                        checked={!!item}
+                                        onChange={() => { handleChecked(requirement, 1) }}
+                                    >
+                                        {requirement}
+                                    </CheckBox>
+                                    {!!item &&
+                                        <View style={{ marginLeft: 33, marginBottom: 5 }}>
+                                            <Text category="s2">Coats:</Text>
+                                            <View style={{ flexDirection: 'row', margin: 1 }}>
+                                                <CheckBox checked={item.coat == 1} onChange={() => { item.coat == 1 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 1) }}>One</CheckBox>
+                                                <CheckBox checked={item.coat == 2} onChange={() => { item.coat == 2 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 2) }}>Two</CheckBox>
+                                            </View>
+                                            <Input style={{ marginVertical: 10 }} placeholder="Notes" value={item.comment} onChangeText={(text) => { handleUpdateComment(requirement, text) }} />
                                         </View>
-                                        <Input style={{ marginVertical: 10 }} placeholder="Notes" value={item.comment} onChangeText={(text) => { handleUpdateComment(requirement, text) }} />
-                                    </View>
-                                }
+                                    }
 
-                            </View>
-                        )
+                                </View>
+                            )
+                        }
                     })}
 
                     {/* Estimate */}
@@ -223,7 +246,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                     <Button onPress={() => { setVisible(false); setSelecting(false); }} appearance="ghost">
                         Cancel
                     </Button>
-                    <Button onPress={() => { if (name && selectedRoom && estimate) { mode == 'edit' ? editAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) : addAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) } }} >
+                    <Button onPress={() => { if (name && selectedRoom && estimate) { mode == 'edit' ? editAreaHandler({ ...selectedRoom, requirements: checked, name, estimate, index: editMode.index }) : addAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) } }} >
                         {mode == 'edit' ? 'Edit' : 'Create'}
                     </Button>
                 </View>

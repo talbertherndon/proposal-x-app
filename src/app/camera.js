@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Alert, ImageBackground, Image, Dimensions } from 'react-native'
 import { Camera } from 'expo-camera'
 import { useNavigation, useRoute } from '@react-navigation/native'
@@ -28,16 +28,6 @@ export default function CameraScreen() {
     //navigation.navigate({ name: 'Project', params: { ...params, file: photo.uri, source: photo.uri }, merge: true })
   }
 
-
-  const __startCamera = async () => {
-    const { status } = await Camera.requestPermissionsAsync()
-    console.log(status)
-    if (status === 'granted') {
-      setStartCamera(true)
-    } else {
-      Alert.alert('Access denied')
-    }
-  }
   const __savePhoto = () => {
     setStartCamera(false);
     navigation.navigate({ name: 'Project', params: { ...params, file: capturedImage.uri, source: capturedImage.uri }, merge: true })
@@ -45,7 +35,6 @@ export default function CameraScreen() {
   const __retakePicture = () => {
     setCapturedImage(null)
     setPreviewVisible(false)
-    __startCamera()
   }
   const __handleFlashMode = () => {
     if (flashMode === 'on') {
@@ -63,6 +52,16 @@ export default function CameraScreen() {
       setCameraType('back')
     }
   }
+
+  useEffect(async () => {
+    const { status } = await Camera.requestPermissionsAsync()
+    console.log(status)
+    if (status === 'granted') {
+      setStartCamera(true)
+    } else {
+      Alert.alert('Access denied')
+    }
+  }, [])
   return (
     <View style={styles.container}>
       <View

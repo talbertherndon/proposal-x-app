@@ -4,20 +4,22 @@ import { useEffect, useState } from "react";
 import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-export default function CustomerInformation({ tab, setCustomerInformation }) {
-    const [name, setName] = useState('John Doe')
-    const [address, setAddress] = useState('123 Main St')
-    const [city, setCity] = useState('Chicago')
-    const [state, setState] = useState('IL')
-    const [zip, setZip] = useState(60065)
-    const [phone, setPhone] = useState(9378466871)
-    const [email, setEmail] = useState('johndoe@gmail.com')
+export default function CustomerInformation({ tab, setCustomerInformation, customerInformation, editing }) {
+    const [name, setName] = useState(customerInformation.name ? customerInformation.name : 'John Doe')
+    const [address, setAddress] = useState(customerInformation.address ? customerInformation.address : '123 Main St')
+    const [city, setCity] = useState(customerInformation.city ? customerInformation.city : 'Phoenix')
+    const [state, setState] = useState(customerInformation.state ? customerInformation.state : 'AZ')
+    const [zip, setZip] = useState(customerInformation.zip ? customerInformation.zip : 60085)
+    const [phone, setPhone] = useState(customerInformation.phone ? customerInformation.phone : 9378466871)
+    const [email, setEmail] = useState(customerInformation.email ? customerInformation.email : 'johndoe@gmail.com')
 
 
     useEffect(() => {
         const payload = { name, address, city, state, zip, phone, email }
         setCustomerInformation(payload)
     }, [tab])
+
+    console.log(editing)
 
     return (
         <>
@@ -30,7 +32,7 @@ export default function CustomerInformation({ tab, setCustomerInformation }) {
                         <Input size="medium" style={styles.input} value={city} onChangeText={(e) => { setCity(e) }} label="City" placeholder="Chicago" />
                         <View style={{ flexDirection: 'row' }}>
                             <Input size="medium" style={[styles.input, { flex: 1, marginRight: 5 }]} value={state} onChangeText={(e) => { setState(e) }} label="State/Province" placeholder="IL" />
-                            <Input keyboardType="numeric" size="medium" style={[styles.input, { flex: 1, marginLeft: 5 }]} value={zip} onChangeText={(e) => { setZip(e) }} label="Zip/Postal code" placeholder="00000" />
+                            <Input keyboardType="numeric" size="medium" style={[styles.input, { flex: 1, marginLeft: 5 }]} value={zip} onChangeText={(e) => { setZip(e) }} label="Zip/Postal code" />
                         </View>
                         <Input keyboardType="phone-pad" autoComplete="tel" size="medium" style={styles.input} value={phone} onChangeText={(e) => { setPhone(e) }} label="Phone" placeholder="000-000-0000" />
                         <Input keyboardType="email-address" size="medium" style={styles.input} value={email} onChangeText={(e) => { setEmail(e) }} label="Email" placeholder="johndoe@gmail.com" />

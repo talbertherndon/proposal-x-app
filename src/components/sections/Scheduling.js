@@ -4,21 +4,26 @@ import { Image } from 'expo-image';
 import { useEffect, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
+const parseDate = (dateString) => {
+    // Example: Assuming the format is 'MM/DD/YYYY'
+    const parts = dateString.split('/');
+    return new Date(parts[2], parts[0] - 1, parts[1]);
+};
 
 
-export default function Scheduling({ tab, setSchedulingInformation }) {
-    const [startDate, setStartDate] = useState()
-    const [finishDate, setFinishDate] = useState()
-    const [comment, setComment] = useState('Project nodes here')
+
+export default function Scheduling({ tab, setSchedulingInformation, schedulingInformation }) {
+    const [startDate, setStartDate] = useState(schedulingInformation.start ? parseDate(schedulingInformation.start) : null)
+    const [finishDate, setFinishDate] = useState(schedulingInformation.finish ? parseDate(schedulingInformation.finish) : null)
+    const [comment, setComment] = useState(schedulingInformation.notes ? schedulingInformation.notes : 'Project nodes here')
 
     useEffect(() => {
         const payload = {
-            startDate,
-            finishDate,
-            comment
+            start: startDate?.toLocaleDateString(),
+            finish: finishDate?.toLocaleDateString(),
+            notes: comment
         }
         setSchedulingInformation(payload)
-
     }, [tab])
 
     return (

@@ -44,19 +44,40 @@ export default function App() {
 
   useEffect(() => {
     console.log("CREATING TABLES")
-
-    
-
     db.transaction((tx) => {
       tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS projects(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, city TEXT, state TEXT, zip INT, phone INT, email TEXT, start TEXT, finish TEXT, notes TEXT, cost INT)"
-      );
-    })
-    db.transaction((tx) => {
-      tx.executeSql(
-        "CREATE TABLE IF NOT EXISTS areas(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, source TEXT, requirements TEXT, estimate INT, category TEXT, project_id INT, FOREIGN KEY (project_id) REFERENCES projects(id))"
+        "DROP TABLE IF EXISTS areas"
       )
     })
+    db.transaction((tx) => {
+      tx.executeSql(
+        "DROP TABLE IF EXISTS projects"
+      )
+    })
+    db.transaction((tx) => {
+      tx.executeSql(
+        "DROP TABLE IF EXISTS customers"
+      )
+    })
+
+
+    // db.transaction((tx) => {
+    //   tx.executeSql(
+    //     "CREATE TABLE IF NOT EXISTS projects(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, city TEXT, state TEXT, zip INT, phone INT, email TEXT, start TEXT, finish TEXT, notes TEXT, cost INT,completed INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)"
+    //   );
+    // })
+
+    // db.transaction((tx) => {
+    //   tx.executeSql(
+    //     "CREATE TABLE IF NOT EXISTS areas(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, source TEXT, file TEXT, requirements TEXT, estimate INT, category TEXT, status TEXT, completed INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP, project_id INT, FOREIGN KEY (project_id) REFERENCES projects(id))"
+    //   )
+    // })
+    // db.transaction((tx) => {
+    //   tx.executeSql(
+    //     "CREATE TABLE IF NOT EXISTS customers(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, address TEXT, city TEXT, state TEXT, zip INT, phone INT, email TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, updated_at DATETIME DEFAULT CURRENT_TIMESTAMP)"
+    //   );
+    // })
+
   }, [])
 
   return (
@@ -64,10 +85,10 @@ export default function App() {
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
         <NavigationContainer>
-          <Stack.Navigator>
-            <Stack.Screen name='Home' component={HomeScreen} options={{ headerTitle: (props) => <Logo {...props} /> }} />
+          <Stack.Navigator >
+            <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: true, headerTitle: (props) => <Logo {...props} /> }} />
             <Stack.Screen name='Project' component={ProjectScreen} options={{
-              title: "Proposal"
+              title: "Manage Project"
             }} />
             <Stack.Screen name='Camera' component={CameraScreen} options={{ headerTitle: (props) => <Logo {...props} /> }} />
           </Stack.Navigator>

@@ -1,47 +1,120 @@
 import { Layout, Tab, TabView, Text, Button, useTheme, useStyleSheet, StyleService } from '@ui-kitten/components';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, SafeAreaView, StyleSheet, View } from 'react-native';
 import CustomerInformation from '../components/sections/CustomerInformation';
 import JobInformation from '../components/sections/JobInformation';
 import Confirmation from '../components/sections/Confirmation';
 import Scheduling from '../components/sections/Scheduling';
-import { createProject } from '../../api';
+import * as MailComposer from 'expo-mail-composer';
+import { generatePdf } from '../utils/generate-pdf';
+import { shareAsync } from 'expo-sharing';
+import { createProject, editProject } from '../../api';
+
 
 export default function ProjectScreen({ route, navigation }) {
     const theme = useTheme();
+    const params = route.params
     const [tab, setTab] = useState(0);
-    const [customerInformation, setCustomerInformation] = useState();
-    const [jobInformation, setJobInformation] = useState([]);
-    const [schedulingInformation, setSchedulingInformation] = useState();
-
+    const [customerInformation, setCustomerInformation] = useState(params ? { name: params.name, address: params.address, city: params.city, state: params.state, zip: params.zip, phone: params.phone, email: params.email } : {});
+    const [jobInformation, setJobInformation] = useState(params ? params.areas : []);
+    const [schedulingInformation, setSchedulingInformation] = useState(params ? { start: params.start, finish: params.finish, comment: params.notes } : {});
+    const [editing, setEditing] = useState(!!params)
+    const [isAvailable, setIsAvailable] = useState(false);
+    console.log("PARAMS:", editing, params);
 
     function calculateTotal() {
-        // setCost(jobInformation.reduce((total, item) => total + item.estimate, 0));
-        return jobInformation.reduce((total, item) => total + item.estimate, 0)
+        return parseFloat(jobInformation.reduce((total, item) => total + item.estimate, 0).toFixed(2))
     }
 
-    function addProjectHandler() {
-        const payload = { ...customerInformation, areas: jobInformation, ...schedulingInformation, cost: calculateTotal() }
-        createProject(payload)
-        navigation.navigate('Home');
+    async function editProjectHandler() {
+        const payload = { ...customerInformation, areas: jobInformation, ...schedulingInformation, cost: calculateTotal(), id: params.id }
+        console.log("EDITING:", payload)
+        const uri = await generatePdf(payload, payload.areas, false)
+        MailComposer.composeAsync({
+            subject: "A change has been made to your CQ Painting Proposal!",
+            body: "Please review changed made to your porposal.",
+            recipients: [payload.email, "talbertherndon1@gmail.com"],
+            attachments: [uri]
+        }).then((r) => {
+            if (r.status == 'sent') {
+                editProject(payload, params.id)
+                navigation.navigate('Home');
+            } else {
+                Alert.alert("Must re-send proposal to save project!")
+
+            }
+
+        })
+
+
     }
+
+    async function downloadProject() {
+        const payload = { ...customerInformation, areas: jobInformation, ...schedulingInformation, cost: calculateTotal() }
+        console.log(payload)
+        const uri = await generatePdf(payload, payload.areas, true)
+        shareAsync(uri);
+    }
+    async function addProjectHandler() {
+        const payload = { ...customerInformation, areas: jobInformation, ...schedulingInformation, cost: calculateTotal() }
+        console.log(payload)
+        const uri = await generatePdf(payload, payload.areas, true)
+        // shareAsync(uri);
+
+        MailComposer.composeAsync({
+            subject: "You have recieved a project proposal from CQ Painting!",
+            body: "Attached below is your proposal:",
+            recipients: [payload.email, "talbertherndon1@gmail.com"],
+            attachments: [uri]
+
+        }).then((r) => {
+            createProject(payload)
+            navigation.navigate('Home');
+            if (r.status != 'sent') {
+                Alert.alert("No email was sent but project saved!", undefined, [])
+            }
+        }).catch((e) => {
+            console.log(e);
+            Alert.alert("Unable to send mail!", undefined, [])
+            createProject(payload)
+            navigation.navigate('Home');
+        })
+
+
+    }
+
+    useEffect(() => {
+        async function checkAvailability() {
+            const isMailAvailable = await MailComposer.isAvailableAsync();
+            setIsAvailable(isMailAvailable)
+        }
+        checkAvailability();
+    }, [])
+
+    // useEffect(() => {
+    //     console.log("PARAMS:", params)
+    //     if (!!params) {
+    //         console.log("PARAMS:", params);
+    //         setCustomerInformation({ name: params.name, address: params.address, city: params.city, state: params.state, zip: params.zip, phone: params.phone, email: params.email })
+    //     }
+    // }, [])
 
     return (
         <Layout style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 }} >
                 <TabView swipeEnabled={false} style={{ flex: 1, paddingVertical: 10 }} selectedIndex={tab} onSelect={index => setTab(index)}>
                     <Tab title="Customer">
-                        <CustomerInformation tab={tab} setCustomerInformation={setCustomerInformation} />
+                        <CustomerInformation editing={editing} tab={tab} setCustomerInformation={setCustomerInformation} customerInformation={customerInformation} />
                     </Tab>
                     <Tab title="Job">
-                        <JobInformation params={route.params} navigation={navigation.navigate} setJobInformation={setJobInformation} jobInformation={jobInformation} />
+                        <JobInformation setJobInformation={setJobInformation} jobInformation={jobInformation} />
                     </Tab>
                     <Tab title="Scheduling">
                         <Scheduling tab={tab} setSchedulingInformation={setSchedulingInformation} schedulingInformation={schedulingInformation} />
                     </Tab>
                     <Tab title="Confirm">
-                        <Confirmation tab={tab} customerInformation={customerInformation} jobInformation={jobInformation} schedulingInformation={schedulingInformation} />
+                        <Confirmation cost={calculateTotal()} tab={tab} customerInformation={customerInformation} jobInformation={jobInformation} schedulingInformation={schedulingInformation} />
                     </Tab>
                 </TabView>
                 <View style={[styles.contiainer, { flexDirection: 'row', marginLeft: 'auto', marginTop: "auto" }]}>
@@ -50,9 +123,14 @@ export default function ProjectScreen({ route, navigation }) {
                     </Button>}
 
                     {tab == 3 ?
-                        <Button onPress={addProjectHandler} >
-                            Confirm
-                        </Button>
+                        <>
+                            <Button onPress={downloadProject}>
+                                Download
+                            </Button>
+                            <Button style={{ marginLeft: 10 }} onPress={editing ? editProjectHandler : addProjectHandler}>
+                                {editing ? 'Re-Send' : 'Send'}
+                            </Button>
+                        </>
                         :
                         <Button onPress={() => { setTab(tab + 1) }} >
                             Next

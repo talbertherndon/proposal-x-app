@@ -4,7 +4,7 @@ export const areas = [
         source: require('../../assets/areas/foyer.png'),
         file: 'foyer.png',
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
     },
     {
         name: 'Living room',
@@ -12,14 +12,14 @@ export const areas = [
             require('../../assets/areas/living.png'),
         file: 'living.png',
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
     },
     {
         name: 'Dining room',
         source:
             require('../../assets/areas/dining.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'dining.png',
 
     },
@@ -28,7 +28,7 @@ export const areas = [
         source:
             require('../../assets/areas/family.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'family.png'
 
     },
@@ -37,7 +37,7 @@ export const areas = [
         source:
             require('../../assets/areas/loft.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'loft.png'
     },
     {
@@ -45,7 +45,7 @@ export const areas = [
         source:
             require('../../assets/areas/kitchen.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'kitchen.png'
     },
     {
@@ -53,7 +53,7 @@ export const areas = [
         source:
             require('../../assets/areas/hall.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'hall.png'
     },
     {
@@ -61,7 +61,7 @@ export const areas = [
         source:
             require('../../assets/areas/stairwell.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'stairwell.png'
     },
     {
@@ -69,7 +69,7 @@ export const areas = [
         source:
             require('../../assets/areas/powder.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'powder.png'
     },
     {
@@ -77,7 +77,7 @@ export const areas = [
         source:
             require('../../assets/areas/laundry.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'laundry.png'
     },
     {
@@ -85,7 +85,7 @@ export const areas = [
         source:
             require('../../assets/areas/masterbedroom.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'masterbedroom.png'
     },
     {
@@ -93,7 +93,7 @@ export const areas = [
         source:
             require('../../assets/areas/masterbathroom.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'masterbathroom.png'
     },
     {
@@ -101,7 +101,7 @@ export const areas = [
         source:
             require('../../assets/areas/mainbathroom.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'mainbathroom.png'
     },
     {
@@ -109,7 +109,7 @@ export const areas = [
         source:
             require('../../assets/areas/bedroom.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'bedroom.png'
     },
     {
@@ -117,7 +117,7 @@ export const areas = [
         source:
             require('../../assets/areas/office.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'office.png'
     },
     {
@@ -125,7 +125,7 @@ export const areas = [
         source:
             require('../../assets/areas/basement.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'basement.png'
     },
     {
@@ -133,7 +133,7 @@ export const areas = [
         source:
             require('../../assets/areas/garage.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'bedroom.png'
     },
     {
@@ -141,7 +141,7 @@ export const areas = [
         source:
             require('../../assets/areas/other.png'),
         category: 'Interior',
-        status: 'online',
+        status: 'incomplete',
         file: 'other.png'
     },
     {
@@ -149,7 +149,7 @@ export const areas = [
         source:
             require('../../assets/areas/wood.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'wood.png'
     },
     {
@@ -157,7 +157,7 @@ export const areas = [
         source:
             require('../../assets/areas/aluminum.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'aluminum.png'
     },
     {
@@ -165,7 +165,7 @@ export const areas = [
         source:
             require('../../assets/areas/trim.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'trim.png'
     },
     {
@@ -173,7 +173,7 @@ export const areas = [
         source:
             require('../../assets/areas/frontdoor.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'frontdoor.png'
     },
     {
@@ -181,7 +181,7 @@ export const areas = [
         source:
             require('../../assets/areas/backdoor.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'backdoor.png'
     },
     {
@@ -189,7 +189,7 @@ export const areas = [
         source:
             require('../../assets/areas/garagedoor.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'garagedoor.png'
     },
     {
@@ -197,7 +197,7 @@ export const areas = [
         source:
             require('../../assets/areas/shutters.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'shutters.png'
     },
     {
@@ -205,14 +205,15 @@ export const areas = [
         source:
             require('../../assets/areas/windows.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
+        file: 'windows.png',
     },
     {
         name: 'Soffits & Fascia',
         source:
             require('../../assets/areas/soffits.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'soffits.png'
     },
     {
@@ -220,14 +221,16 @@ export const areas = [
         source:
             require('../../assets/areas/gutters.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
+        file: 'gutters.png'
+
     },
     {
         name: 'Deck',
         source:
             require('../../assets/areas/deck.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'deck.png'
     },
     {
@@ -235,7 +238,7 @@ export const areas = [
         source:
             require('../../assets/areas/fence.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'fence.png'
     },
     {
@@ -243,7 +246,7 @@ export const areas = [
         source:
             require('../../assets/areas/other_e.png'),
         category: 'Exterior',
-        status: 'online',
+        status: 'incomplete',
         file: 'other_e.png'
     },
 ]
