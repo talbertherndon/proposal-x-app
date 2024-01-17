@@ -54,14 +54,9 @@ export default function CameraScreen() {
   }
 
   useEffect(async () => {
-    const { status } = await Camera.requestPermissionsAsync()
-    console.log(status)
-    if (status === 'granted') {
       setStartCamera(true)
-    } else {
-      Alert.alert('Access denied')
-    }
   }, [])
+
   return (
     <View style={styles.container}>
       <View

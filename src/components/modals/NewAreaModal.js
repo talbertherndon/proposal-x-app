@@ -19,6 +19,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import CurrencyInput from 'react-native-currency-input';
 import PhoneCamera from "../../app/camera";
 import { useNavigation } from "@react-navigation/native";
+import { Camera } from "expo-camera";
 
 
 
@@ -67,10 +68,16 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
         setChecked(prev => prev.map(opt => opt.name === option ? { ...opt, comment: comment } : opt))
     }
 
-    function customPhotoHandler() {
-        navigation.navigate('Camera', { ...selectedRoom, requirements: checked, name, estimate, index: editMode?.index })
-        setVisible(false)
+    async function customPhotoHandler() {
+        const { status } = await Camera.requestCameraPermissionsAsync()
+        console.log(status)
+        if (status === 'granted') {
+            navigation.navigate('Camera', { ...selectedRoom, requirements: checked, name, estimate, index: editMode?.index })
+            setVisible(false)
 
+        } else {
+          Alert.alert('Access denied')
+        }
     }
 
 

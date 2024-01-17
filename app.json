@@ -11,9 +11,12 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.talbertherndon1.proposalxapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,8 +28,15 @@
       "favicon": "./assets/favicon.png",
       "build": {
         "babel": {
-          "include": ["@ui-kitten/components"]
+          "include": [
+            "@ui-kitten/components"
+          ]
         }
+      }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "09fcc60e-d802-4878-9fe0-76b4ead9dcba"
       }
     }
   }

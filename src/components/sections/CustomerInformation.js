@@ -19,7 +19,6 @@ export default function CustomerInformation({ tab, setCustomerInformation, custo
         setCustomerInformation(payload)
     }, [tab])
 
-    console.log(editing)
 
     return (
         <>
