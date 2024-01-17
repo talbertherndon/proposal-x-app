@@ -11,7 +11,7 @@ import { generatePdf } from "../utils/generate-pdf";
 export default function HomeScreen({ route, navigation }) {
     const [projects, setProjects] = useState([])
     const [refreshing, setRefreshing] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(1);
+    const [selectedIndex, setSelectedIndex] = useState(0);
 
     const theme = useTheme()
 
@@ -35,7 +35,6 @@ export default function HomeScreen({ route, navigation }) {
         setRefreshing(true)
         readProjects().then((res) => {
             setProjects(res)
-            console.log(projects);
             setRefreshing(false)
         }).catch((e) => {
             setRefreshing(false)
@@ -44,9 +43,7 @@ export default function HomeScreen({ route, navigation }) {
         })
     }
     function parseDate(dateStr) {
-        console.log("DATL:", dateStr)
         const parts = dateStr.split('/');
-        console.log("DATES", parts)
         return new Date(parts[2], parts[0] - 1, parts[1]);
     }
     function isPastDue(dueDateStr) {
@@ -83,13 +80,21 @@ export default function HomeScreen({ route, navigation }) {
 
                 </View>
                 <TabView onSelect={index => { setSelectedIndex(index) }} selectedIndex={selectedIndex} swipeEnabled={false} style={{ flex: 1, paddingVertical: 10 }}>
-                    <Tab title="Past Due">
-                        <List style={{ backgroundColor: 'white' }} data={projects} renderItem={(info) => { if (isPastDue(info.item.finish)) return (<ProjectCard info={info} refreshProjects={refreshProjects} createAttachment={createAttachment} removeProject={removeProject} editProject={editProject} />) }} />
-                    </Tab>
                     <Tab title="Upcoming">
-                        <List style={{ backgroundColor: 'white' }} data={projects} renderItem={(info) => { if (!isPastDue(info.item.finish)) return (<ProjectCard info={info} refreshProjects={refreshProjects} createAttachment={createAttachment} removeProject={removeProject} editProject={editProject} />) }} />
+                        <View>
+                            <List style={{ backgroundColor: 'white' }} data={projects} renderItem={(info) => { if (!isPastDue(info.item.finish)) return (<ProjectCard info={info} refreshProjects={refreshProjects} createAttachment={createAttachment} removeProject={removeProject} editProject={editProject} />) }} />
+                        </View>
                     </Tab>
+                    <Tab title="Past Due">
+                        <View>
+                            <List style={{ backgroundColor: 'white' }} data={projects} renderItem={(info) => { if (isPastDue(info.item.finish)) return (<ProjectCard info={info} refreshProjects={refreshProjects} createAttachment={createAttachment} removeProject={removeProject} editProject={editProject} />) }} />
+                        </View>
+                    </Tab>
+
                     <Tab title="Completed">
+                        <View style={{ flex: 1, alignItems: "center" }}>
+                            <Text category="c1" style={{ margin: 30 }}>No Projects Completed</Text>
+                        </View>
                     </Tab>
                 </TabView>
             </ScrollView>
