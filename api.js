@@ -1,7 +1,5 @@
 import { db } from "./App";
 export async function createProject(payload) {
-  console.log(payload);
-
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
       tx.executeSql(

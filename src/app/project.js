@@ -1,7 +1,7 @@
 import { Layout, Tab, TabView, Text, Button, useTheme, useStyleSheet, StyleService } from '@ui-kitten/components';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, SafeAreaView, StyleSheet, View } from 'react-native';
+import { Alert, SafeAreaView, StyleSheet, View } from 'react-native';
 import CustomerInformation from '../components/sections/CustomerInformation';
 import JobInformation from '../components/sections/JobInformation';
 import Confirmation from '../components/sections/Confirmation';
@@ -21,7 +21,6 @@ export default function ProjectScreen({ route, navigation }) {
     const [schedulingInformation, setSchedulingInformation] = useState(params ? { start: params.start, finish: params.finish, comment: params.notes } : {});
     const [editing, setEditing] = useState(!!params)
     const [isAvailable, setIsAvailable] = useState(false);
-    console.log("PARAMS:", editing, params);
 
     function calculateTotal() {
         return parseFloat(jobInformation.reduce((total, item) => total + item.estimate, 0).toFixed(2))

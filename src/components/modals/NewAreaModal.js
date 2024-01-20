@@ -45,9 +45,9 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
         setName(room.name)
         setSelectedRoom(room);
         if (room.category === 'Interior') {
-            setRequirements(["Walls", "Ceiling", "Trim", "Windows", "Doors", "Closets", "Primer", "Primer Spot", "Minor Patching & Sanding", "Wallpaper Removal"])
+            setRequirements(["Walls", "Ceiling", "Trim", "Windows", "Doors", "Closets", "Primer", "Primer Spot", "Minor Patching, Sanding & Caulking", "Wallpaper Removal"])
         } else {
-            setRequirements(["Power Wash", "Scrape/Sand", "Caulk", "Priming", "Painting", "Sealer/Staom", "Wood Repair", "Other"])
+            setRequirements(["Power Wash", "Scrape/Sand", "Caulk", "Priming", "Painting", "Sealer/Stain", "Wood Repair", "Other"])
 
         }
     }
@@ -74,14 +74,16 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
         if (status === 'granted') {
             navigation.navigate('Camera', { ...selectedRoom, requirements: checked, name, estimate, index: editMode?.index })
             setVisible(false)
-
         } else {
-          Alert.alert('Access denied')
+            Alert.alert('Access denied')
         }
     }
 
-
     useEffect(() => {
+        Camera.requestCameraPermissionsAsync()
+
+    }, [])
+    useEffect(async () => {
         if (editMode) {
             handleRoomSelect(editMode)
             setChecked(typeof editMode?.requirements === 'string' ? JSON.parse(editMode.requirements) : editMode.requirements)
@@ -90,11 +92,12 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
 
         }
 
+
     }, [editMode])
 
     return (
         <Card style={{ maxHeight: windowHeight - (windowHeight / 5) }} disabled={true}>
-            <KeyboardAwareScrollView>
+            <KeyboardAwareScrollView enableOnAndroid={true} enableAutomaticScroll={(Platform.OS === 'ios')} extraHeight={130} extraScrollHeight={130}>
                 <View style={{ width: 30, height: 30, marginLeft: "auto" }}>
                     <Icon
                         name="close-outline"
@@ -218,11 +221,14 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                                     </CheckBox>
                                     {!!item &&
                                         <View style={{ marginLeft: 33, marginBottom: 5 }}>
-                                            <Text category="s2">Coats:</Text>
-                                            <View style={{ flexDirection: 'row', margin: 1 }}>
-                                                <CheckBox checked={item.coat == 1} onChange={() => { item.coat == 1 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 1) }}>One</CheckBox>
-                                                <CheckBox checked={item.coat == 2} onChange={() => { item.coat == 2 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 2) }}>Two</CheckBox>
-                                            </View>
+                                            {(selectedRoom.category == "Interior" && !["Minor Patching, Sanding & Caulking", "Wallpaper Removal"].includes(requirement)) || (selectedRoom.category == "Exterior" && ["Priming", "Painting", "Sealer/Stain"].includes(requirement)) ?
+                                                <>
+                                                    <Text category="s2">Coats:</Text>
+                                                    <View style={{ flexDirection: 'row', margin: 1 }}>
+                                                        <CheckBox checked={item.coat == 1} onChange={() => { item.coat == 1 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 1) }}>One</CheckBox>
+                                                        <CheckBox checked={item.coat == 2} onChange={() => { item.coat == 2 ? handleUpdateCoat(requirement, 0) : handleUpdateCoat(requirement, 2) }}>Two</CheckBox>
+                                                    </View>
+                                                </> : <></>}
                                             <Input style={{ marginVertical: 10 }} placeholder="Notes" value={item.comment} onChangeText={(text) => { handleUpdateComment(requirement, text) }} />
                                         </View>
                                     }

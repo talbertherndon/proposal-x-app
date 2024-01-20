@@ -1,7 +1,6 @@
 import { Button, Card, Icon, Layout, List, TabView, Text, useTheme, Tab } from "@ui-kitten/components";
 import { useEffect, useState } from "react";
 import { Alert, FlatList, RefreshControl, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { deleteProject, readProjects } from "../../api";
 import ProjectCard from "../components/ProjectCard";
 import { shareAsync } from "expo-sharing";

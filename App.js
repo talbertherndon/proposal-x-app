@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { KeyboardAvoidingView, LogBox, Platform, StyleSheet, Text, View } from 'react-native';
+import { LogBox, Platform } from 'react-native';
 import * as eva from '@eva-design/eva';
-import { ApplicationProvider, IconRegistry, useTheme } from '@ui-kitten/components';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
 import ProjectScreen from './src/app/project';
 import { EvaIconsPack } from '@ui-kitten/eva-icons'
 import HomeScreen from './src/app/home';

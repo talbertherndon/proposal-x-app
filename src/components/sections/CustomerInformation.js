@@ -1,17 +1,17 @@
 import { Button, Input, Layout, Text } from "@ui-kitten/components";
 import { TouchableWithoutFeedback } from "@ui-kitten/components/devsupport";
 import { useEffect, useState } from "react";
-import { Keyboard, ScrollView, StyleSheet, View } from "react-native";
+import { Keyboard, Platform, ScrollView, StyleSheet, View } from "react-native";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default function CustomerInformation({ tab, setCustomerInformation, customerInformation, editing }) {
-    const [name, setName] = useState(customerInformation.name ? customerInformation.name : 'John Doe')
-    const [address, setAddress] = useState(customerInformation.address ? customerInformation.address : '123 Main St')
-    const [city, setCity] = useState(customerInformation.city ? customerInformation.city : 'Phoenix')
-    const [state, setState] = useState(customerInformation.state ? customerInformation.state : 'AZ')
-    const [zip, setZip] = useState(customerInformation.zip ? customerInformation.zip : 60085)
-    const [phone, setPhone] = useState(customerInformation.phone ? customerInformation.phone : 9378466871)
-    const [email, setEmail] = useState(customerInformation.email ? customerInformation.email : 'johndoe@gmail.com')
+    const [name, setName] = useState(customerInformation.name ? customerInformation.name : '')
+    const [address, setAddress] = useState(customerInformation.address ? customerInformation.address : '')
+    const [city, setCity] = useState(customerInformation.city ? customerInformation.city : '')
+    const [state, setState] = useState(customerInformation.state ? customerInformation.state : '')
+    const [zip, setZip] = useState(customerInformation.zip ? customerInformation.zip : null)
+    const [phone, setPhone] = useState(customerInformation.phone ? customerInformation.phone : null)
+    const [email, setEmail] = useState(customerInformation.email ? customerInformation.email : '')
 
 
     useEffect(() => {
@@ -22,7 +22,8 @@ export default function CustomerInformation({ tab, setCustomerInformation, custo
 
     return (
         <>
-            <KeyboardAwareScrollView>
+            <KeyboardAwareScrollView enableOnAndroid='true' enableAutomaticScroll={(Platform.OS === 'ios')}
+            >
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1 }}>
                     <View style={styles.container}>
                         <Text category='h5' style={{ marginBottom: 10 }}>Customer Information</Text>

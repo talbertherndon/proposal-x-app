@@ -8,8 +8,6 @@ let camera = Camera
 let windowWidth = Dimensions.get('window').width;
 
 export default function CameraScreen() {
-
-  const [startCamera, setStartCamera] = React.useState(false)
   const [previewVisible, setPreviewVisible] = React.useState(false)
   const [capturedImage, setCapturedImage] = React.useState(null)
   const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
@@ -29,7 +27,6 @@ export default function CameraScreen() {
   }
 
   const __savePhoto = () => {
-    setStartCamera(false);
     navigation.navigate({ name: 'Project', params: { ...params, file: capturedImage.uri, source: capturedImage.uri }, merge: true })
   }
   const __retakePicture = () => {
@@ -53,9 +50,6 @@ export default function CameraScreen() {
     }
   }
 
-  useEffect(async () => {
-      setStartCamera(true)
-  }, [])
 
   return (
     <View style={styles.container}>
@@ -97,7 +91,6 @@ export default function CameraScreen() {
                   onPress={__handleFlashMode}
                   style={{
                     backgroundColor: flashMode === 'off' ? '#000' : '#fff',
-                    borderRadius: '50%',
                     height: 25,
                     width: 25
                   }}
@@ -114,7 +107,6 @@ export default function CameraScreen() {
                   onPress={__switchCamera}
                   style={{
                     marginTop: 20,
-                    borderRadius: '50%',
                     height: 25,
                     width: 25
                   }}

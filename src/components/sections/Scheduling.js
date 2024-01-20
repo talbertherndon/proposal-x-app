@@ -15,7 +15,7 @@ const parseDate = (dateString) => {
 export default function Scheduling({ tab, setSchedulingInformation, schedulingInformation }) {
     const [startDate, setStartDate] = useState(schedulingInformation.start ? parseDate(schedulingInformation.start) : null)
     const [finishDate, setFinishDate] = useState(schedulingInformation.finish ? parseDate(schedulingInformation.finish) : null)
-    const [comment, setComment] = useState(schedulingInformation.notes ? schedulingInformation.notes : 'Project nodes here')
+    const [comment, setComment] = useState(schedulingInformation.notes ? schedulingInformation.notes : '')
 
     useEffect(() => {
         const payload = {
@@ -54,6 +54,7 @@ export default function Scheduling({ tab, setSchedulingInformation, schedulingIn
                         multiline={true}
                         textStyle={{ minHeight: 132 }}
                         label={"Customer Notes"}
+                        placeholder="The customer says only come on weekends between 2pm - 8pm"
                         value={comment}
                         onChangeText={(e) => { setComment(e) }}
                     />

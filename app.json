@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "proposal-x-app",
-    "slug": "proposal-x-app",
-    "version": "1.0.0",
+    "name": "CQ Painting",
+    "slug": "CQ Painting",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.talbertherndon1.proposalxapp"
@@ -22,18 +20,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.talbertherndon1.proposalxapp"
     },
     "web": {
       "favicon": "./assets/favicon.png",
       "build": {
         "babel": {
-          "include": [
-            "@ui-kitten/components"
-          ]
+          "include": ["@ui-kitten/components"]
         }
       }
     },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "09fcc60e-d802-4878-9fe0-76b4ead9dcba"

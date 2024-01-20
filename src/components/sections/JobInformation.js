@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, View } from "react-native";
 import {
   Button,
   Input,
@@ -14,6 +14,7 @@ import { Image } from "expo-image";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { areas } from "../../mock/areas";
 import { deleteArea } from "../../../api";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function JobInformation({ setJobInformation, jobInformation }) {
   const [visible, setVisible] = useState(false);
@@ -37,7 +38,6 @@ export default function JobInformation({ setJobInformation, jobInformation }) {
   }
 
   function editAreaHandler(room) {
-    console.log("ROOM EDIT:", room);
     const newItems = [...jobInformation];
     newItems[room.index] = room;
     setJobInformation(newItems);
@@ -102,7 +102,7 @@ export default function JobInformation({ setJobInformation, jobInformation }) {
   };
 
   return (
-    <>
+    <KeyboardAwareScrollView enableOnAndroid={true} enableAutomaticScroll={(Platform.OS === 'ios')}>
       <Layout style={styles.container}>
         <Text category="h5" style={{ marginBottom: 10 }}>
           Area Details
@@ -143,7 +143,7 @@ export default function JobInformation({ setJobInformation, jobInformation }) {
           renderItem={renderItem}
         />
       </Layout>
-    </>
+    </KeyboardAwareScrollView>
   );
 }
 
