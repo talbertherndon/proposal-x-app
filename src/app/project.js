@@ -62,7 +62,7 @@ export default function ProjectScreen({ route, navigation }) {
         // shareAsync(uri);
 
         MailComposer.composeAsync({
-            subject: "You have recieved a project proposal from CQ Painting!",
+            subject: "You have received a project proposal from CQ Painting!",
             body: "Attached below is your proposal:",
             recipients: [payload.email, "talbertherndon1@gmail.com"],
             attachments: [uri]
