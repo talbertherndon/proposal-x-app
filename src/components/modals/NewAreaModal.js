@@ -30,9 +30,13 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [name, setName] = useState('')
     const [requirements, setRequirements] = useState([])
+    const [custom, setCustom] = useState('')
     const [checked, setChecked] = useState([])
+    const [checkedArea, setCheckedArea] = useState([])
     const [estimate, setEstimate] = useState('');
     const [filteredRooms, setFilterRooms] = useState(areas)
+
+    const [fullList, setFullList] = useState([])
     const navigation = useNavigation();
     function filterItems(filter) {
         setSelected(filter);
@@ -47,10 +51,24 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
         if (room.category === 'Interior') {
             setRequirements(["Walls", "Ceiling", "Trim", "Windows", "Doors", "Closets", "Primer", "Primer Spot", "Minor Patching, Sanding & Caulking", "Wallpaper Removal"])
         } else {
-            setRequirements(["Power Wash", "Scrape/Sand", "Caulk", "Priming", "Painting", "Sealer/Stain", "Wood Repair", "Other"])
-
+            console.log(room)
+            if (room.name == "Full Service") {
+                setRequirements(["Siding", "Trim", "Caulk", "Priming", "Painting", "Sealer/Stain", "Wood Repair", "Other"])
+                setFullList(["Siding", "Trim", "Doors", "Garage Door", "Shutters", "Windows", "Soffits & Fascia", "Gutters", "Deck", "Fence", "Other"])
+            } else {
+                setRequirements(["Power Wash", "Scrape/Sand", "Caulk", "Priming", "Painting", "Sealer/Stain", "Wood Repair", "Other"])
+            }
         }
     }
+    function handleCheckedArea(option) {
+        const includes = !!checkedArea.find(obj => obj === option)
+        if (includes) {
+            setCheckedArea(checkedArea.filter(item => item !== option))
+        } else {
+            setCheckedArea([...checkedArea, option])
+        }
+    }
+
     function handleChecked(option) {
         const includes = !!checked.find(obj => obj.name === option)
         if (includes) {
@@ -87,11 +105,12 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
         if (editMode) {
             handleRoomSelect(editMode)
             setChecked(typeof editMode?.requirements === 'string' ? JSON.parse(editMode.requirements) : editMode.requirements)
+            setCheckedArea(typeof editMode?.checkedArea === 'string' ? JSON.parse(editMode.checkedArea) : editMode.checkedArea)
+
             setName(editMode.name)
             setEstimate(editMode.estimate)
 
         }
-
 
     }, [editMode])
 
@@ -202,6 +221,30 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                         </Layout>
                     }
                     <Divider style={{ marginVertical: 20 }} />
+                    {/* Custom Requiements */}
+                    <Text category="h6" style={{ marginVertical: 10 }}>Areas</Text>
+                    {selectedRoom?.name == "Full Service" &&
+                        <>
+                            {fullList.map((requirement, i) => {
+                                const item = checkedArea.find(obj => obj === requirement)
+                                return (
+                                    <View key={i} style={{ padding: 10 }}>
+                                        <CheckBox
+                                            category="s2"
+                                            style={{ marginVertical: 3, }}
+                                            checked={!!item}
+                                            onChange={() => { handleCheckedArea(requirement) }}
+                                        >
+                                            {requirement}
+                                        </CheckBox>
+
+
+                                    </View>
+                                )
+
+                            })}
+                        </>
+                    }
 
                     {/* Requiements */}
                     <Text category="h6" style={{ marginVertical: 10 }}>Requirements</Text>
@@ -233,10 +276,13 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                                         </View>
                                     }
 
+
+
                                 </View>
                             )
                         }
                     })}
+
 
                     {/* Estimate */}
                     <Text category="h6" style={{ marginVertical: 10, marginTop: 15 }}>Estimate</Text>
@@ -259,7 +305,7 @@ export default function NewAreaModal({ setVisible, addAreaHandler, editMode, edi
                     <Button onPress={() => { setVisible(false); setSelecting(false); }} appearance="ghost">
                         Cancel
                     </Button>
-                    <Button onPress={() => { if (name && selectedRoom && estimate) { mode == 'edit' ? editAreaHandler({ ...selectedRoom, requirements: checked, name, estimate, index: editMode.index }) : addAreaHandler({ ...selectedRoom, requirements: checked, name, estimate }) } }} >
+                    <Button onPress={() => { if (name && selectedRoom && estimate) { mode == 'edit' ? editAreaHandler({ ...selectedRoom, requirements: checked, checkedArea: checkedArea, name, estimate, index: editMode.index }) : addAreaHandler({ ...selectedRoom, requirements: checked, checkedArea: checkedArea, name, estimate }) } }} >
                         {mode == 'edit' ? 'Edit' : 'Create'}
                     </Button>
                 </View>

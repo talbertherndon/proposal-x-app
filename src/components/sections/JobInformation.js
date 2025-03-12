@@ -32,9 +32,11 @@ export default function JobInformation({ setJobInformation, jobInformation }) {
   }, [route.params?.file]);
 
   function addAreaHandler(room) {
+
     console.log(room);
     setJobInformation([room, ...jobInformation]);
     setVisible(false);
+    
   }
 
   function editAreaHandler(room) {

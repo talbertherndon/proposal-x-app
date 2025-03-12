@@ -26,6 +26,14 @@ export default function ProjectScreen({ route, navigation }) {
         return parseFloat(jobInformation.reduce((total, item) => total + item.estimate, 0).toFixed(2))
     }
 
+    console.log(jobInformation)
+
+    const fullServiceCheck = jobInformation
+        .filter((item) => item.name === "Full Service")
+        .map((item) => item.checkedArea)[0];
+
+    console.log("checked:", fullServiceCheck)
+
     async function editProjectHandler() {
         const payload = { ...customerInformation, areas: jobInformation, ...schedulingInformation, cost: calculateTotal(), id: params.id }
         console.log("EDITING:", payload)
@@ -113,7 +121,7 @@ export default function ProjectScreen({ route, navigation }) {
                         <Scheduling tab={tab} setSchedulingInformation={setSchedulingInformation} schedulingInformation={schedulingInformation} />
                     </Tab>
                     <Tab title="Confirm">
-                        <Confirmation cost={calculateTotal()} tab={tab} customerInformation={customerInformation} jobInformation={jobInformation} schedulingInformation={schedulingInformation} />
+                        <Confirmation cost={calculateTotal()} tab={tab} customerInformation={customerInformation} jobInformation={jobInformation} schedulingInformation={schedulingInformation} fullServiceCheck={fullServiceCheck} />
                     </Tab>
                 </TabView>
                 <View style={[styles.contiainer, { flexDirection: 'row', marginLeft: 'auto', marginTop: "auto" }]}>

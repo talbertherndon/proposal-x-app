@@ -145,6 +145,14 @@ export const areas = [
         file: 'other.png'
     },
     {
+        name: 'Full Service',
+        source:
+            require('../../assets/areas/fullservice.png'),
+        category: 'Exterior',
+        status: 'incomplete',
+        file: 'fullservice.png'
+    },
+    {
         name: 'Wood Siding',
         source:
             require('../../assets/areas/wood.png'),

@@ -13,6 +13,7 @@ export async function generatePdf(data, areas, parsed) {
 
       return `
         <h4>${area.name} | Category: ${area.category} Estimate: $ ${area.estimate.toFixed(2)} </h4>
+        ${area.name == "Full Service" && `${area.checkedArea.join(", ")}`}
         <div id="areas-container">${reqHTML}</div>
 
     `}
@@ -37,14 +38,15 @@ export async function generatePdf(data, areas, parsed) {
       </div>
       <span class="span-3">
         <div class="div-8">
-          Email: chris@cqpainting.com
+         Email: chris@cqpainting.com
+         <br />
+         www.cqpainting.com
           <br />
-          Phone: (847)-377-1689
           <br />
-          27252 W Nippersink Rd, Ingleside 60041
+          <br />
         </div>
         <div class="div-9">
-          Company Name: ${data.email}
+          Name: ${data.name}
           <br />
           Phone: ${data.phone}
           <br />

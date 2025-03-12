@@ -17,7 +17,7 @@ import TermsModal from "../modals/TermsModal";
 import { areas } from "../../mock/areas";
 
 const renderItem = ({ item, index }) => {
-    let requirements = typeof item.requirements === 'string' ? JSON.parse(item.requirements): item.requirements;
+    let requirements = typeof item.requirements === 'string' ? JSON.parse(item.requirements) : item.requirements;
     let photo = typeof item.source === 'string' ? item?.source.includes('file') ? item.source : areas.find((area) => area.file === item.source) : areas.find((area) => area.file === item.file);
     return (
         <>
@@ -27,7 +27,7 @@ const renderItem = ({ item, index }) => {
                     <Image
                         style={{ width: 75, height: 75, borderRadius: 5 }}
                         source={!!photo?.source ? photo.source : photo}
-                        />
+                    />
                 )}
                 title={(props) => (
                     <Text style={{ marginHorizontal: 10, fontSize: 18, fontWeight: 500 }}>
@@ -47,11 +47,43 @@ const renderItem = ({ item, index }) => {
     );
 };
 
+// const renderItemService = ({ item, index }) => {
+//     let requirements = typeof item.requirements === 'string' ? JSON.parse(item.requirements) : item.requirements;
+//     let photo = typeof item.source === 'string' ? item?.source.includes('file') ? item.source : areas.find((area) => area.file === item.source) : areas.find((area) => area.file === item.file);
+//     return (
+//         <>
+//             <ListItem
+//                 style={{ marginHorizontal: -5 }}
+//                 accessoryLeft={(props) => (
+//                     <Image
+//                         style={{ width: 75, height: 75, borderRadius: 5 }}
+//                         source={!!photo?.source ? photo.source : photo}
+//                     />
+//                 )}
+//                 title={(props) => (
+//                     <Text style={{ marginHorizontal: 10, fontSize: 18, fontWeight: 500 }}>
+//                         {item.name}
+//                     </Text>
+//                 )}
+//                 description={(des) => (
+//                     <View style={{ marginHorizontal: 10 }}>
+//                         <Text category="c1">
+//                             {requirements.map((require) => require.name).join(", ")}
+//                         </Text>
+//                         <Text category="c2">${item.estimate.toFixed(2)}</Text>
+//                     </View>
+//                 )}
+//             />
+//         </>
+//     );
+// };
+
 export default function Confirmation({
     jobInformation,
     customerInformation,
     schedulingInformation,
     cost,
+    fullServiceCheck
 }) {
     const [visible, setVisible] = useState(false);
     const [confirm, setConfirm] = useState(false);
@@ -82,11 +114,12 @@ export default function Confirmation({
                         style={styles.cardContainer}
                         header={(props) => (
                             <View style={styles.cardHeader}>
-                                <Text category="h6">Job Information</Text>
+                                <Text category="h6">Job Information </Text>
                             </View>
                         )}
                     >
                         <List data={jobInformation} renderItem={renderItem} />
+                        <Text>{fullServiceCheck.join(' - ')}</Text>
                     </Card>
                 )}
 

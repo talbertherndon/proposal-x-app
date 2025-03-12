@@ -66,7 +66,7 @@ export async function editProject(payload, projectId) {
     });
   });
 }
-
+// need to add full service to this
 export async function createArea(payload, id) {
   return new Promise((resolve, reject) => {
     db.transaction((tx) => {
